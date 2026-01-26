@@ -56,4 +56,3 @@ If you encounter issues:
 1. **Build fails:** Check that all dependencies are in `package.json`
 2. **Environment variables not working:** Make sure they're set in Vercel dashboard
 3. **Routing issues:** The `vercel.json` includes SPA routing configuration
-
