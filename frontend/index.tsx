@@ -1,5 +1,6 @@
 
 export * from './AppView.tsx';
+export * from '../components/Toast.tsx';
 export * from '../components/Navbar.tsx';
 export * from '../components/MapView.tsx';
 export * from '../components/FoodCard.tsx';

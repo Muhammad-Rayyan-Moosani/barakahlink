@@ -1,29 +1,23 @@
 import path from 'path';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
-    // In Vercel, environment variables are available via process.env
-    const geminiKey = env.GEMINI_API_KEY || process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
-    
-    return {
-      server: {
-        port: 3000,
-        host: '0.0.0.0',
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    port: 3000,
+    host: '0.0.0.0',
+    proxy: {
+      // In dev, proxy /api requests to the Express backend
+      '/api': {
+        target: 'http://localhost:5001',
+        changeOrigin: true,
       },
-      plugins: [react()],
-      define: {
-        'process.env.API_KEY': JSON.stringify(geminiKey),
-        'process.env.GEMINI_API_KEY': JSON.stringify(geminiKey),
-        'import.meta.env.GEMINI_API_KEY': JSON.stringify(geminiKey),
-        'import.meta.env.API_KEY': JSON.stringify(geminiKey),
-        'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(geminiKey)
-      },
-      resolve: {
-        alias: {
-          '@': path.resolve(__dirname, '.'),
-        }
-      }
-    };
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, '.'),
+    },
+  },
 });
