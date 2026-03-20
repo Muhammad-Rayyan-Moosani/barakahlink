@@ -4,15 +4,6 @@ import { prisma } from './lib/prisma';
 import { logger } from './lib/logger';
 
 async function main() {
-  // Verify database connection before accepting traffic
-  try {
-    await prisma.$connect();
-    logger.info('Database connected');
-  } catch (err) {
-    logger.error('Failed to connect to database', { error: String(err) });
-    process.exit(1);
-  }
-
   const app = createApp();
 
   const server = app.listen(env.PORT, () => {
@@ -22,6 +13,15 @@ async function main() {
       frontend: env.FRONTEND_URL,
     });
   });
+
+  // Connect to DB after server is already listening (so healthcheck passes immediately)
+  try {
+    await prisma.$connect();
+    logger.info('Database connected');
+  } catch (err) {
+    logger.error('Failed to connect to database', { error: String(err) });
+    process.exit(1);
+  }
 
   // Graceful shutdown
   process.on('SIGTERM', async () => {
