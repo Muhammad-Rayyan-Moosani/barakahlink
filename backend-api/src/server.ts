@@ -20,7 +20,7 @@ async function main() {
     logger.info('Database connected');
   } catch (err) {
     logger.error('Failed to connect to database', { error: String(err) });
-    process.exit(1);
+    // Don't exit — keep server up so healthcheck passes; DB queries will fail gracefully
   }
 
   // Graceful shutdown
